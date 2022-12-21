@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <script src="https://unpkg.com/vue@2.1.3/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="vue-app">
+        <h1>Login Page</h1>
+
+        <a
+            href="https://www.linkedin.com/oauth/v2/authorization?response_type=code&scope=r_liteprofile%20r_emailaddress&client_id=77tndbdm5tayi9&redirect_uri=http://localhost/linkedinLogin"><img
+                src="linkedin.png" width="100" /></a>
+
+    </div>
+    <script>
+        new Vue({
+            el: "#vue-app",
+            data: {},
+
+            method: {
+                created(authcode) {
+                    axios
+                        .post("https://www.linkedin.com/oauth/v2/token", this.form)
+                        .then((response) => {
+                            console.log(JSON.parse(response.data));
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                },
+            },
+
+            mounted: () => {
+      
+                const queryString = window.location.search;
+                console.log(window.location.search);
+                const urlParams = new URLSearchParams(queryString);
+                console.log(urlParams);
+                const code = urlParams.get("code");
+                console.log(code);
+                if (code && code !== null) {
+                    fetch('http://localhost:3001/?code='+code, {'Access-Control-Allow-Origin': "*", 'mode': 'no-cors'} )
+                        .then((response) => response.json())
+                        .then((data) => console.log(data));
+                    
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>
